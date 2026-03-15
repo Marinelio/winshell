@@ -254,10 +254,21 @@ Set-PSReadLineOption -AddToHistoryHandler {
     return ($line -notmatch 'password|secret|token|apikey|connectionstring')
 }
 
-# Oh My Posh - Velvet Custom Theme (Windows logo, purple outline, no heart/time/ms)
-$ompTheme = "$PSScriptRoot\velvet_custom.omp.json"
-if (Test-Path $ompTheme) {
-    oh-my-posh init pwsh --config $ompTheme | Out-String | Invoke-Expression
+# Oh My Posh - Lazy loaded (will initialize on first prompt)
+$_ompLoaded = $false
+$_ompTheme = "$PSScriptRoot\velvet_custom.omp.json"
+
+function global:prompt {
+    if (-not $global:_ompLoaded) {
+        if (Test-Path $_ompTheme) {
+            oh-my-posh init pwsh --config $_ompTheme | Out-String | Invoke-Expression
+            $global:_ompLoaded = $true
+            # Call prompt again now that oh-my-posh is loaded
+            return (& $function:prompt)
+        }
+    }
+    # Fallback if oh-my-posh not available
+    return "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
 }
 
 

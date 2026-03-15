@@ -76,8 +76,19 @@
             "fetch_virtual_env": false
           },
           "style": "powerline",
-          "template": " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ",
+          "template": " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}{{ if .Env.CONDA_DEFAULT_ENV }} ({{ .Env.CONDA_DEFAULT_ENV }}){{ end }} ",
           "type": "python"
+        },
+        {
+          "background": "#3A8E7B",
+          "foreground": "#ffffff",
+          "powerline_symbol": "\ue0b0",
+          "options": {
+            "conda_default_env_only": false
+          },
+          "style": "powerline",
+          "template": "{{ if .Name }} \ue73c activated {{ .Name }} {{ end }}",
+          "type": "conda"
         },
         {
           "background": "#AE1401",
